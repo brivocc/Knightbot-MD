@@ -137,6 +137,10 @@ const { rosedayCommand } = require('./commands/roseday');
 const imagineCommand = require('./commands/imagine');
 const videoCommand = require('./commands/video');
 const sudoCommand = require('./commands/sudo');
+// Added by Bevon Manyara
+const kenya = require('./commands/kenya');
+const setOwnerCommand = require('./commands/setowner');
+const commandCooldowns = new Map(); // senderId -> time of last command (anti-spam)
 const { miscCommand, handleHeart } = require('./commands/misc');
 const { animeCommand } = require('./commands/anime');
 const { piesCommand, piesAlias } = require('./commands/pies');
@@ -373,6 +377,24 @@ async function handleMessages(sock, messageUpdate, printLog) {
             }
         }
 
+        // Anti-spam (Bevon Manyara): one command every COMMAND_COOLDOWN seconds per user. Owner and sudo are exempt.
+        if (userMessage.startsWith('.') && settings.commandCooldown > 0 && !isOwnerOrSudoCheck) {
+            const now = Date.now();
+            const last = commandCooldowns.get(senderId);
+            if (last && now - last.at < settings.commandCooldown * 1000) {
+                if (!last.warned) {
+                    last.warned = true;
+                    const wait = Math.ceil((settings.commandCooldown * 1000 - (now - last.at)) / 1000);
+                    await sock.sendMessage(chatId, { text: `⏳ Slow down a little: try again in ${wait}s.` }, { quoted: message });
+                }
+                return;
+            }
+            commandCooldowns.set(senderId, { at: now, warned: false });
+            if (commandCooldowns.size > 5000) { // keep memory small on busy bots
+                for (const [id, v] of commandCooldowns) if (now - v.at > 10 * 60 * 1000) commandCooldowns.delete(id);
+            }
+        }
+
         // Command handlers - Execute commands immediately without waiting for typing indicator
         // We'll show typing indicator after command execution if needed
         let commandExecuted = false;
@@ -600,6 +622,22 @@ async function handleMessages(sock, messageUpdate, printLog) {
                 break;
             case userMessage === '.news':
                 await newsCommand(sock, chatId);
+                break;
+            // Kenyan commands and owner number (Bevon Manyara)
+            case userMessage === '.holidays' || userMessage.startsWith('.holidays '):
+                await kenya.holidaysCommand(sock, chatId, message, userMessage.slice(9).trim());
+                break;
+            case userMessage === '.county' || userMessage.startsWith('.county '):
+                await kenya.countyCommand(sock, chatId, message, rawText.trim().slice(7).trim());
+                break;
+            case userMessage === '.kes' || userMessage.startsWith('.kes '):
+                await kenya.kesCommand(sock, chatId, message, userMessage.slice(4).trim());
+                break;
+            case userMessage === '.sheng' || userMessage.startsWith('.sheng '):
+                await kenya.shengCommand(sock, chatId, message, userMessage.slice(6).trim());
+                break;
+            case userMessage === '.setowner' || userMessage.startsWith('.setowner '):
+                await setOwnerCommand(sock, chatId, message, userMessage.slice(9).trim());
                 break;
             case userMessage.startsWith('.ttt') || userMessage.startsWith('.tictactoe'):
                 const tttText = userMessage.split(' ').slice(1).join(' ');

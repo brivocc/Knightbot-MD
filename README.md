@@ -1,5 +1,41 @@
 # 🤖 Knight Bot
 
+> ## ✨ This version: improved by [Bevon Manyara](https://brivocc.github.io)
+>
+> A fork of [mruniquehacker/Knightbot-MD](https://github.com/mruniquehacker/Knightbot-MD) (MIT), kept up to date with the original (v3.0.8), plus:
+>
+> **Easy phone numbers**
+> - Set your details in a **`.env` file** instead of editing code (copy `.env.example`)
+> - Numbers work **in any format**: `0712 345 678`, `+254712345678` or `254712345678` (default country code 254, changeable)
+> - **`.setowner <number>`**: change the owner number **from WhatsApp**, no restart needed (only the current owner can)
+> - `.sudo add 0712 345 678` now accepts local numbers too
+>
+> **New Kenyan commands**
+> - `.holidays [year]`: Kenyan public holidays, with Easter dates calculated and a countdown to the next one
+> - `.county <name|number>`: county number and headquarters for all 47 counties (`.county list`)
+> - `.kes 100 usd` / `.kes 5000 to eur`: live exchange rates to and from Kenya shillings
+> - `.sheng <word>`: meanings of common Sheng words
+>
+> **Safety & quality**
+> - 🔒 **Security fix:** owner check no longer matches *any* sender whose ID merely contains the owner's digits (a stranger with a long `@lid` ID could become owner)
+> - 🔒 **`.gitignore` fixed:** it was saved as UTF-16, so Git ignored it and `session/` (your WhatsApp login) and `.env` could be uploaded by mistake
+> - ⏳ **Anti-spam cooldown:** one command every `COMMAND_COOLDOWN` seconds per user (owner and sudo exempt)
+> - ✅ **Automated tests:** `npm test` (no WhatsApp needed)
+>
+> ### Quick start (this version)
+> ```bash
+> git clone https://github.com/brivocc/Knightbot-MD.git && cd Knightbot-MD
+> npm install
+> cp .env.example .env      # then edit .env: OWNER_NUMBER=0712345678
+> npm test                  # optional: check everything works
+> npm start                 # enter the pairing code in WhatsApp > Linked devices
+> ```
+> ⚠️ WhatsApp bots like this use an unofficial library and can get a number banned. Use a spare number, and never spam.
+>
+> All credit for the original bot goes to **Professor / [mruniquehacker](https://github.com/mruniquehacker)**. The original README follows.
+
+---
+
 This is a WhatsApp bot built using the Baileys library for group management, including features like tagging all members, muting/unmuting, and many more. It's designed to help admins efficiently manage WhatsApp groups.
 
 <div align="center"> 

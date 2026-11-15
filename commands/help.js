@@ -39,6 +39,15 @@ async function helpCommand(sock, chatId, message) {
 ╚═══════════════════╝ 
 
 ╔═══════════════════╗
+🇰🇪 *Kenya Commands*:
+║ ➤ .holidays [year]
+║ ➤ .county <name|number>
+║ ➤ .kes <amount> <usd|eur|…>
+║ ➤ .kes <amount> to <usd|…>
+║ ➤ .sheng <word>
+╚═══════════════════╝
+
+╔═══════════════════╗
 👮‍♂️ *Admin Commands*:
 ║ ➤ .ban @user
 ║ ➤ .promote @user
@@ -88,6 +97,8 @@ async function helpCommand(sock, chatId, message) {
 ║ ➤ .pmblocker setmsg <text>
 ║ ➤ .setmention <reply to msg>
 ║ ➤ .mention <on/off>
+║ ➤ .setowner <number>
+║ ➤ .sudo add/del <number>
 ╚═══════════════════╝
 
 ╔═══════════════════╗
