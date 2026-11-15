@@ -1,14 +1,15 @@
 const settings = require('../settings');
 const { addSudo, removeSudo, getSudoList } = require('../lib/index');
 const isOwnerOrSudo = require('../lib/isOwner');
+const { findNumberInText } = require('../lib/phone');
 
 function extractMentionedJid(message) {
     const mentioned = message.message?.extendedTextMessage?.contextInfo?.mentionedJid || [];
     if (mentioned.length > 0) return mentioned[0];
     const text = message.message?.conversation || message.message?.extendedTextMessage?.text || '';
-    const match = text.match(/\b(\d{7,15})\b/);
-    if (match) return match[1] + '@s.whatsapp.net';
-    return null;
+    // Any format: 0712 345 678, +254 712 345 678, 254712345678 (Bevon Manyara)
+    const number = findNumberInText(text);
+    return number ? number + '@s.whatsapp.net' : null;
 }
 
 async function sudoCommand(sock, chatId, message) {
@@ -20,7 +21,7 @@ async function sudoCommand(sock, chatId, message) {
     const sub = (args[0] || '').toLowerCase();
 
     if (!sub || !['add', 'del', 'remove', 'list'].includes(sub)) {
-        await sock.sendMessage(chatId, { text: 'Usage:\n.sudo add <@user|number>\n.sudo del <@user|number>\n.sudo list' },{quoted :message});
+        await sock.sendMessage(chatId, { text: 'Usage:\n.sudo add <@user|number>\n.sudo del <@user|number>\n.sudo list\n\nNumbers can be written like 0712 345 678 or +254712345678.' },{quoted :message});
         return;
     }
 

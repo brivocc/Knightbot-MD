@@ -71,7 +71,9 @@ setInterval(() => {
     }
 }, 30_000) // check every 30 seconds
 
-let phoneNumber = "911234567890"
+// Number to link the bot with: PAIRING_NUMBER, else OWNER_NUMBER (both from .env; any format, e.g. 0712 345 678)
+const { normalizeNumber } = require('./lib/phone')
+let phoneNumber = settings.pairingNumber || settings.ownerNumber || "911234567890"
 let owner = JSON.parse(fs.readFileSync('./data/owner.json'))
 
 global.botname = "KNIGHT BOT"
@@ -85,8 +87,8 @@ const question = (text) => {
     if (rl) {
         return new Promise((resolve) => rl.question(text, resolve))
     } else {
-        // In non-interactive environment, use ownerNumber from settings
-        return Promise.resolve(settings.ownerNumber || phoneNumber)
+        // In non-interactive environment (panels, servers), use the number from .env / settings
+        return Promise.resolve(phoneNumber)
     }
 }
 
@@ -228,11 +230,11 @@ async function startXeonBotInc() {
         if (!!global.phoneNumber) {
             phoneNumber = global.phoneNumber
         } else {
-            phoneNumber = await question(chalk.bgBlack(chalk.greenBright(`Please type your WhatsApp number 😍\nFormat: 6281376552730 (without + or spaces) : `)))
+            phoneNumber = await question(chalk.bgBlack(chalk.greenBright(`Please type your WhatsApp number 😍\nAny format works: 0712 345 678, +254712345678 or 254712345678 : `)))
         }
 
-        // Clean the phone number - remove any non-digit characters
-        phoneNumber = phoneNumber.replace(/[^0-9]/g, '')
+        // Accept local or international formats (0712..., +254..., 254...) and keep digits only
+        phoneNumber = normalizeNumber(phoneNumber) || String(phoneNumber).replace(/[^0-9]/g, '')
 
         // Validate the phone number using awesome-phonenumber
         const pn = require('awesome-phonenumber');

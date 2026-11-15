@@ -1,11 +1,32 @@
 require('dotenv').config();
+const fs = require('fs');
+const path = require('path');
+const { normalizeNumber } = require('./lib/phone');
+
+// Easy number setup (Bevon Manyara): put your details in a .env file (see .env.example) instead of editing code.
+// Numbers can be written any way: 0712 345 678, +254712345678 or 254712345678.
+// The owner can also change the owner number from WhatsApp with .setowner <number>; that choice is kept in
+// data/owner-override.json and wins over .env.
+function savedOwnerNumber() {
+  try {
+    const saved = JSON.parse(fs.readFileSync(path.join(__dirname, 'data', 'owner-override.json'), 'utf8'));
+    return normalizeNumber(saved.ownerNumber);
+  } catch {
+    return '';
+  }
+}
 
 const settings = {
-  packname: 'Knight Bot',
+  packname: process.env.PACK_NAME || 'Knight Bot',
   author: '‎',
-  botName: "Knight Bot",
-  botOwner: 'Professor', // Your name
-  ownerNumber: '919876543210', //Set your number here without + symbol, just add country code & number without any space
+  botName: process.env.BOT_NAME || "Knight Bot",
+  botOwner: process.env.OWNER_NAME || 'Professor', // Your name
+  // Owner number: .setowner (saved) > OWNER_NUMBER in .env > default below
+  ownerNumber: savedOwnerNumber() || normalizeNumber(process.env.OWNER_NUMBER) || '919876543210',
+  // Number to link (pair) the bot with. Defaults to the owner number.
+  pairingNumber: normalizeNumber(process.env.PAIRING_NUMBER) || '',
+  // Seconds a user must wait between commands (anti-spam). Owner and sudo users are exempt. 0 = off.
+  commandCooldown: Math.max(0, Number(process.env.COMMAND_COOLDOWN ?? 3) || 0),
   giphyApiKey: 'qnl7ssQChTdPjsKta2Ax2LMaGXz303tq',
   commandMode: "public",
   maxStoreMessages: 20, 
