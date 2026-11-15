@@ -140,6 +140,7 @@ const sudoCommand = require('./commands/sudo');
 // Added by Bevon Manyara
 const kenya = require('./commands/kenya');
 const setOwnerCommand = require('./commands/setowner');
+const shop = require('./commands/shop');
 const commandCooldowns = new Map(); // senderId -> time of last command (anti-spam)
 const { miscCommand, handleHeart } = require('./commands/misc');
 const { animeCommand } = require('./commands/anime');
@@ -261,6 +262,14 @@ async function handleMessages(sock, messageUpdate, printLog) {
                     ...channelInfo
                 });
             }
+            return;
+        }
+
+        // Shop & customer care (Bevon Manyara): customers in private chat + owner shop commands.
+        // Runs before the tic-tac-toe check so a customer replying "1" to the menu isn't taken as a game move.
+        if (await shop.handleShopMessage(sock, message, {
+            chatId, senderId, isGroup, rawText, isOwnerOrSudo: isOwnerOrSudoCheck, fromMe: message.key.fromMe,
+        })) {
             return;
         }
 

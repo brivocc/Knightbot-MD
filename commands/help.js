@@ -39,6 +39,15 @@ async function helpCommand(sock, chatId, message) {
 ╚═══════════════════╝ 
 
 ╔═══════════════════╗
+🛒 *Shop (owner)*:
+║ ➤ .shop (status & help)
+║ ➤ .addproduct Name | price | stock | category
+║ ➤ .orders · .paid ORD1001 · .delivered ORD1001
+║ ➤ .reply ORD1001 <message>
+║ ➤ .shopset till <number>
+╚═══════════════════╝
+
+╔═══════════════════╗
 🇰🇪 *Kenya Commands*:
 ║ ➤ .holidays [year]
 ║ ➤ .county <name|number>

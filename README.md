@@ -16,6 +16,17 @@
 > - `.kes 100 usd` / `.kes 5000 to eur`: live exchange rates to and from Kenya shillings
 > - `.sheng <word>`: meanings of common Sheng words
 >
+> **🛒 Sales & customer care (new)**
+> Customers chat with the bot in private and it works like a shop assistant:
+> - Welcome menu, **product list with prices**, cart (`add P3 2`), **checkout** (name + delivery location)
+> - **M-Pesa** Till / Paybill instructions with the order number as account; customers send `paid <M-Pesa code>`
+> - **Order tracking** (`4`), delivery & opening hours, **FAQ auto-replies**, and **talk to a person** (`7`)
+> - **AI assistant** (optional, Claude API): answers free questions in English/Swahili from *your* products and FAQs only,
+>   and hands over to you when unsure. Prompt caching, low effort, daily cost cap
+> - **Owner alerts** on WhatsApp for every new order, payment code and help request
+> - Manage everything from WhatsApp: `.shop`, `.addproduct`, `.editproduct`, `.stock`, `.addfaq`, `.orders`, `.paid`, `.delivered`, `.reply`
+> - Groups keep working as a normal group bot; the owner keeps all bot commands
+>
 > **Safety & quality**
 > - 🔒 **Security fix:** owner check no longer matches *any* sender whose ID merely contains the owner's digits (a stranger with a long `@lid` ID could become owner)
 > - 🔒 **`.gitignore` fixed:** it was saved as UTF-16, so Git ignored it and `session/` (your WhatsApp login) and `.env` could be uploaded by mistake

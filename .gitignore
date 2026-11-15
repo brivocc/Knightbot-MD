@@ -32,3 +32,7 @@ yarn-error.log*
 
 # Owner number changed with .setowner (personal)
 data/owner-override.json
+
+# Shop data: customers, orders and phone numbers (personal data)
+data/shop.json
+data/shop.json.tmp
